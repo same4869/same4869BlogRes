@@ -1,27 +1,30 @@
 ---
 title: 基于Fragment的安卓插件化Demo
+tags: [Android]
 ---
 **说明:**本篇文章主要以代码的形式还原结构，并非从原理的角度来阐述插件化，相关原理请自行谷歌。
 
-####1.工程总体结构
-![Alt text](./0AB12936-5E1E-4DBC-907E-82EA671BED5E.png)
+#### 1.工程总体结构
+![Alt text](/img/001/20170227-1.jpg)
 - app是主module，也就是唯一一个配置成`com.android.application`的module，里面是不需要插件化的主页面等。
 - bbcomm是公共依赖库，里面放一些app或者其他插件都会用到的公共资源与控件。
 - login是没有被插件化的模块，作为app的依赖库，本质上和app没什么区别。
 - p_scanword是插件。
 - pluginbase是插件框架。
 
-####2.依赖关系
+#### 2.依赖关系
 - app依赖bbcomm（如果需要使用公共控件）和login
 - bbcomm依赖pluginbase
 - login依赖bbcomm（如果需要使用公共控件）
 - p_scanword依赖bbcomm（如果需要使用公共控件）
 - pluginbase不依赖任何其他
 
-####3.从零开始
+<!-- more -->
+
+#### 3.从零开始
 
 1. 新建一个app的module，类型是application，正常新建一个activity，打造万能测试页面，如下图所示：
-![Alt text](./4C318F8A-D351-4122-8EDD-674C18326103.png)
+![Alt text](/img/001/20170328-1.png)
 稍微解释下这个页面的元素：
 - 第一个button是跳转到login里面的另一个activity的。
 - 第二个button加载插件，把插件的页面展示到下面那个蓝色的layout里面去。
@@ -382,7 +385,7 @@ PluginManager.getInstance(getApplicationContext()).loadPlugins(plugins);
 ```
 
 5. 到现在为止，又完成一大步了，我们来看看pluginbase这个module的文件
-![Alt text](./68BF56AB-C752-44EB-A52A-3410B2FA9D73.png)
+![Alt text](/img/001/20170328-2.png)
 后面四个文件上面基本上都了解完了，最后来看看PlugFragment吧。
 ```java
 public abstract class PlugFragment extends Fragment {
@@ -517,7 +520,7 @@ public class CommButtonView extends Button {
 ```
 `audio_play_bg`这张图片放到bbcomm的module里的，注意到context没有，一言不合就会crash哟。
 宿主和插件由于都是依赖bbcomm的，所以都正常使用这个自定义控件就行了，最后上一张图吧。
-![Alt text](./47B4DF1FCA73EBA75CB9A0A7AA7F2D43.jpg)
+![Alt text](/img/001/20170328-3.png)
 
 
 **总结:**以上写了一大堆，也只不过是插件化的最基本雏形而已，但同时也是基础，虽然基于fragment的插件化目前已不再主流，但再某些地方总是会有用武之地，后面还有很长的路要走，多多站在巨人和别人的肩膀上会走得更快。
