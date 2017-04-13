@@ -1,6 +1,6 @@
 ---
 title: 《APP研发录》读书笔记
-tags: [个人随笔]
+tags: [Android]
 ---
 >前言：这篇是很早以前看《APP研发录》的读书笔记，也是很长一段时间唯一能看完一本并还能留下点东西的技术书籍。最近在整理越来越多的印象笔记，感觉只有不断地输出和写作才能营造出消化了部分的假象，为了让万事开头难更加简单，还是得坚持啊科科。
 
@@ -12,9 +12,9 @@ tags: [个人随笔]
 
 ##### 重构相关
 - 包结构相关
-![Alt text](/img/004/20170412-1.png)
+![Alt text](/img/005/20170412-1.png)
 - 每个文件只有一个单独的类，不要有嵌套类，比如在Activity中嵌套Adapter、Entity。
-![Alt text](/img/004/20170412-2.png)
+![Alt text](/img/005/20170412-2.png)
 - 以上为一级分包样例参考，如涉及到具体模块，可以再继续分包
 - 单一职责的定义是：一个类或方法，只做一件事情。 
 - 设置BaseAcivity，重新定义生命周期，规范化整体风格
@@ -60,8 +60,7 @@ public final static int convertToInt(Object value, int defaultValue)
 ------
 ##### 底层网络框架设计
 - 如果自己写网络框架，使用AsyncTask居多，一般写法如下
-
-``` 
+```
 Override
 protected Response doInBackground(String… url) {
   return getResponseFromURL(url[0]);
@@ -113,7 +112,8 @@ public abstract class RequestAsyncTask
        onSuccess(response.getResult());
      }
    } 
-``` 
+```
+
 - 至少两个地方可以优化：
 1. 使用线程池
 2. 支持实时取消
@@ -132,7 +132,7 @@ public abstract class RequestAsyncTask
 1. 点击登录按钮，进入登录页面LoginActivity，登录成功后，直接进入个人中心PersonCenterActivity。这种情况最直截了当，一路执行startActivity(intent)就能达到目的。
 2. 在页面A，想要跳转到页面B，并携带一些参数，却发现没有登录，于是先跳转到登录页，登录成功后，再跳转到B页面，同时仍然带着那些参数。
 3. 在页面A，执行某个操作，却发现没有登录，于是跳转到登录页，登录成功后，再回到页面A，继续执行该操作。 
-   
+
 ```
 @Override
   public void onSuccess(String content) {
@@ -157,6 +157,7 @@ public abstract class RequestAsyncTask
   }
   }; 
 ```
+
 - 自动登录一般依赖于cookie(token)，一般存放在Http-Response的header中，APP端不关心里面内容，每次请求当参数传给服务器，每次获得应答则刷新cookie。
 - APP判断用户是否登录则检查这个值就行。服务器来判断cookie是否过期。
 - 出于安全考虑，登录API如果被某一IP频繁访问后端需要作出反应，APP端应该给予配合，比如需要输入验证码啥的，防止恶意注册。密码什么的一定不要用明文。
@@ -165,8 +166,6 @@ public abstract class RequestAsyncTask
 - MobileAPI的逻辑是，检查HTTP请求头中的Accept-Encoding是否有gzip值，如果有，就会执行gzip压缩。
 如果执行了gzip压缩，那么在返回值也就是HTTPResponse的头中，有一个content-encoding字段，会带有gzip的值；否则，就没有这个值。
 - App检查HTTPResponse头中的content-encoding字段是否包含gzip值，这个值的有无，导致了App解析HTTPResponse的姿势不同，如下所示（以下代码参见HTTPRequest这个类）：
-
-  
 ```
 String strResponse = "";
 if ((response.getEntity().getContentEncoding() != null)
@@ -186,12 +185,11 @@ if ((response.getEntity().getContentEncoding() != null)
 } else {
   response.getEntity().writeTo(content);
   strResponse = new String(content.toByteArray()).trim();
-}      
+}   
 ```
------
 
 ##### Android经典场景设计
-- 1）简介ImageLoader。
+1）简介ImageLoader。
 地址：http://blog.csdn.net/yueqinglkong/article/details/27660107
 2）Android-Universal-Image-Loader图片异步加载类库的使用（超详细配置）。
 地址：http://blog.csdn.net/vipzjyno1/article/details/23206387
@@ -206,13 +204,12 @@ if ((response.getEntity().getContentEncoding() != null)
 - 城市列表设计，建议本地保存一份，带版本号，服务器根据APP端的版本号返回增删改的数据，APP端更新并保存。
 - App操作HTML5页面的方法
 1. HTML5
-
 ```
  <a onclick="baobao.callAndroidMethod(100,100,'ccc',true)">
   CallAndroidMethod</a>
 ```
-2. Android
 
+2. Android
 ```
 wvAds.getSettings().setJavaScriptEnabled(true);
 wvAds.loadUrl("file:// /android_asset/104.html");
@@ -222,15 +219,15 @@ public void onClick(View v) {
 String color = "#00ee00";      
 wvAds.loadUrl("javascript: changeColor ('" + color + "');");    }}); 
 ```
+
 - HTML5页面操作App页面的方法
 1. HTML5
-
 ```
 <a onclick="baobao.callAndroidMethod(100,100,'ccc',true)">
   CallAndroidMethod</a> 
 ```
-2. Android
 
+2. Android
 ```
 class JSInteface1 {
   public void callAndroidMethod(int a, float b, 
@@ -245,15 +242,15 @@ class JSInteface1 {
   }
 } 
 ```
-同时，需要注册baobao和JSInterface1的对应关系：
 
+同时，需要注册baobao和JSInterface1的对应关系：
 ```
 wvAds.addJavascriptInterface(new JSInteface1(), "baobao"); 
 ```
+
 要在方法前增加@JavascriptInterface，否则，就不能触发JavaScript方法。
 - 可以在APP的方法内加入参数，来让H5页面开发者能控制页面在APP内的跳转，之前需先约定好跳转的规则对应列表。
 - 有时也可以使用H5来帮助做一些复杂的动画，比如在本地放一个HTML：
-
 ```
 <html>
   <head>
@@ -265,6 +262,7 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
       </body>
     </html> 
 ```
+
 然后使用真实数据来替换 `<data1DefinedByBaobao>`
 - Native和H5由后台可配到底显示哪个页面，可能一些特定的需求会用到这个策略，先暂存。
 
@@ -285,7 +283,8 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
 
 
 ------
-#### 第二部分 App开发中的高级技巧-----
+#### 第二部分 App开发中的高级技巧
+-----
 ##### Crash异常收集与统计
 - Crash分析三部曲
 1. 收集：把Crash收集到本地数据库。
@@ -298,7 +297,7 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
 3. 把错误日志记录到SD卡。
 
 - 对服务器发送以下数据字段（参考）
-![Alt text](/img/004/20170412-3.png)
+![Alt text](/img/005/20170412-3.png)
 - 在具体的Activity中，我们会将CrashType设置为0，而在CrashHandler中才会将CrashType设置为1。
 - 服务器要及时统计这些数据并分类去重后由高到低排序。
 
@@ -306,7 +305,6 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
 -----
 ##### ProGuard相关    
 - 以下是混淆最基本的配置信息，任何App都要使用，可以作为模板使用，作者为每行代码都增加了注释：  
-
 ```
 # 代码混淆压缩比, 在0~7之间, 默认为5, 一般不需要改
   -optimizationpasses 5
@@ -336,8 +334,8 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
 // 抛出异常时保留代码行号, 在第6章异常分析中我们提到过
 -keepattributes SourceFile,LineNumberTable 
 ```
-- 然后加入需要保留不混淆的东西，示例如下：
 
+- 然后加入需要保留不混淆的东西，示例如下：
 ```
 # 保留所有的本地native方法不被混淆
 -keepclasseswithmembernames class * {
@@ -444,7 +442,7 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
 - 主干开发，分支上线是在主干上开发新功能，测试阶段或者上个迭代没完成下个开发周期又开始的情况下，merge到分支上，留一部分人改bug或者开发遗留功能，另一部分在主干上开发新功能，分支上功能完成打包发版后合并到主干上。
 - 分享一个以前在问问的时候代码提交流程：每个developer在专属自己的本地分支开发，非master成员（master成员才有资格把代码merge到主干分支）每次对master发送一个merge request而不是push，必须要master进行code review后由master合并代码。
 - ant打包自行查阅
-![Alt text](/img/004/20170412-4.png)
+![Alt text](/img/005/20170412-4.png)
 - 如果有Monkey包，可以在全局常量中设置isMonKey，还可以在N级页面中留暗门，来控制MonKey可达的页面。
 
 ----
@@ -482,7 +480,6 @@ wvAds.addJavascriptInterface(new JSInteface1(), "baobao");
 - AndroLua有机会可以研究下。
 
 -根据Android的META-INFzhu'ru快速打渠道包，直接上脚本了
-
 ```
 import zipfile
 import shutil
@@ -509,8 +506,8 @@ empty_channel_file = 'META-INF/channel_' + target_channel
 zipped.write(empty_file, empty_channel_file)
 zipped.close()
 ```
-- 还有一个获得渠道号的方法
 
+- 还有一个获得渠道号的方法
 ```
 private String getChannel(Context context) {
   try {
