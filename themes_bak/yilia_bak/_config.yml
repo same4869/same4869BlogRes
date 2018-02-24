@@ -3,8 +3,9 @@
 menu:
   主页: /
   Android: /tags/Android
+  其他技术: /tags/otherTec
   个人随笔: /tags/个人随笔
-  翻唱: /tags/翻唱
+  其他（非技术）: /tags/others
 
 # SubNav
 subnav:
