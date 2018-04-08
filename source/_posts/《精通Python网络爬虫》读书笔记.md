@@ -1,5 +1,6 @@
 ---
 title: 《精通Python网络爬虫》读书笔记
+date: 2017-10-19
 tags: [otherTec]
 ---
 
