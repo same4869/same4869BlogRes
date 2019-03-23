@@ -104,7 +104,7 @@ cd ~/eos/build/programs/nodeos
 修改完后，下次执行./nodeos即可
 ```
 
-![Alt text](/img/014/20180708-01.jpg)
+![Alt text](/img/014/20180708-02.jpg)
 
 看到以上不断输出的数据证明启动成功，CTRL+C可以停止。
 
